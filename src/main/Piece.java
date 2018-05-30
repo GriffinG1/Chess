@@ -2,8 +2,6 @@ package main;
 
 import java.util.*;
 import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import main.Board;
 
 public abstract class Piece {
@@ -104,7 +102,7 @@ class Pawn extends Piece{
                 mv = Integer.parseInt(r.readLine());
             } catch (Exception ex) {
                 System.out.println("Error, please only send an integer.");
-                mv = new Integer(0);
+                mv = new Integer(-1);
             }
             while (true) {
                 if (mv.equals(new Integer(1)) || mv.equals(new Integer(2))) {
@@ -142,7 +140,6 @@ class Pawn extends Piece{
     }
     
     public Piece canCapture() {
-        int[] none = new int[]{-1, -1};
         if (team == 0) {
             if ((Board.getIndex(location[0]+1, location[1]+1).getClass() != NoPiece.class)) {
                 return Board.getIndex(location[0]+1, location[1]+1);
@@ -165,4 +162,112 @@ class Pawn extends Piece{
     public int[] getLocationAsArray() {
         return location;
     }
+}
+
+class King extends Piece {
+    private int[] location; // row location @ [0], col location @ [1]
+    private int team; // White: 0 - Black: 1
+    private char name;
+
+    public King(int locA, int locB, int t) {
+        location = new int[]{locA, locB};
+        team = t;
+        if (team == 0) {name = 'K';} else {name = 'k';};
+    }
+
+    public char getLetter() {
+        return name;
+    }
+    
+    public void setLocation(int locA, int locB) {
+        location[0] = locA;
+        location[1] = locB;
+    }
+    
+    public String getLocation() {
+        return Arrays.toString(location);
+    }
+
+    public int[] getLocationAsArray() {
+        return location;
+    }
+
+    public Piece canCapture() {
+        BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+        List<Piece> surroundings = getSurroundings(Board.board, location[0], location[1]);
+        List<int[]> capture = new ArrayList<int[]>();
+        for (Piece o : surroundings) {
+            if (o.getClass() != NoPiece.class) {
+                capture.add(o.getLocationAsArray());
+            }
+        }
+        if (capture.size() > 0) {
+            System.out.println("You can capture pieces at: ");
+            for (int i = 0; i < capture.size(); i++) {
+                System.out.print(Arrays.toString(capture.get(i)) + ", ");
+            }
+            System.out.println();
+            System.out.println("Which row would you like to capture?");
+            int row;
+            try {
+                row = Integer.parseInt(r.readLine());
+            } catch (IOException ex) {
+                System.out.println("Error, please only send an integer.");
+                row = new Integer(-1);
+            }
+            System.out.println("Which column would you like to capture?");
+            int col;
+            try {
+                col = Integer.parseInt(r.readLine());
+            } catch (IOException ex) {
+                System.out.println("Error, please only send an integer.");
+                col = new Integer(-1);
+            }
+            int[] captureLoc = new int[]{row, col};
+            while (true) {
+                boolean contains = false;
+                for (int[] i : capture) {
+                    if (i[0] == captureLoc[0] && i[1] == captureLoc[1]) contains = true;
+                }
+                if (contains) return Board.getIndex(captureLoc[0], captureLoc[1]);
+                else {
+                    System.out.println("Error, space at row and column is not capturable. Which row would you like to capture? ");
+                    try {
+                        row = Integer.parseInt(r.readLine());
+                    } catch (IOException ex) {
+                        System.out.println("Error, please only send an integer.");
+                        row = new Integer(-1);
+                    }
+                    System.out.println("Which column would you like to capture? ");
+                    try {
+                        col = Integer.parseInt(r.readLine());
+                    } catch (IOException ex) {
+                        System.out.println("Error, please only send an integer.");
+                        col = new Integer(-1);
+                    }
+                }
+                captureLoc = new int[]{row, col};
+            }
+        }
+        return new NoPiece(-1, -1);
+    }
+    
+    private static int[][] directions = new int[][]{{-1,-1}, {-1,0}, {-1,1},  {0,1}, {1,1},  {1,0},  {1,-1},  {0, -1}};
+
+    private List<Piece> getSurroundings(Piece[][] matrix, int y, int x){ // Taken from https://stackoverflow.com/a/12743915
+        List<Piece> res = new ArrayList<Piece>();
+        for (int[] direction : directions) {
+            int cx = x + direction[0];
+            int cy = y + direction[1];
+            if(cy >=0 && cy < matrix.length)
+                if(cx >= 0 && cx < matrix[cy].length)
+                    res.add(matrix[cy][cx]);
+        }
+        return res;
+    }
+
+    public void move() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }
