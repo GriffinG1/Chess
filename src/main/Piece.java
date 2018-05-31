@@ -11,6 +11,7 @@ public abstract class Piece {
     abstract public int[] getLocationAsArray();
     abstract public void move();
     abstract public void setLocation(int locA, int locB);
+    abstract public int getTeam();
 }
 
 class NoPiece extends Piece {
@@ -37,6 +38,9 @@ class NoPiece extends Piece {
         location[0] = locA;
         location[1] = locB;
     }
+    public int getTeam() {
+        return -1;
+    }
 }
 
 class Pawn extends Piece{
@@ -57,7 +61,7 @@ class Pawn extends Piece{
         int oldLoc[] = new int[]{location[0], location[1]};
         boolean cap = false;
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
-        if (enemy.getClass() != NoPiece.class) {
+        if (enemy.getClass() != NoPiece.class && enemy.getTeam() != team) {
             System.out.println("You can capture a piece! Would you like to? (yes or no)");
             String capture;
             try {
@@ -162,6 +166,10 @@ class Pawn extends Piece{
     public int[] getLocationAsArray() {
         return location;
     }
+    
+    public int getTeam() {
+        return team;
+    }
 }
 
 class King extends Piece {
@@ -191,13 +199,17 @@ class King extends Piece {
     public int[] getLocationAsArray() {
         return location;
     }
+    
+    public int getTeam() {
+        return team;
+    }
 
     public Piece canCapture() {
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
         List<Piece> surroundings = getSurroundings(Board.board, location[0], location[1]);
         List<int[]> capture = new ArrayList<int[]>();
         for (Piece o : surroundings) {
-            if (o.getClass() != NoPiece.class) {
+            if (o.getClass() != NoPiece.class && o.getTeam() != team) {
                 capture.add(o.getLocationAsArray());
             }
         }

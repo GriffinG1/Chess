@@ -24,12 +24,12 @@ public class Board {
             board[1][c] = new Pawn(1, c, 0);
             board[6][c] = new Pawn(6, c, 1);
         }
-        board[6][3] = new King(6, 3, 0);
-        /*board[0][0] = 'R'; board[7][0] = 'R'; board[0][28] = 'R'; board[7][28] = 'R';
-        board[0][4] = 'N'; board[7][4] = 'N'; board[0][24] = 'N'; board[7][24] = 'N';
-        board[0][8] = 'B'; board[7][8] = 'B'; board[0][20] = 'B'; board[7][20] = 'B';
-        board[0][12] = 'Q'; board[7][12] = 'Q';
-        board[0][16] = 'K'; board[7][16] = 'K';*/
+        
+//        board[0][0] = 'R'; board[7][0] = 'R'; board[0][7] = 'R'; board[7][7] = 'R';
+//        board[0][1] = 'N'; board[7][1] = 'N'; board[0][6] = 'N'; board[7][6] = 'N';
+//        board[0][2] = 'B'; board[7][2] = 'B'; board[0][5] = 'B'; board[7][5] = 'B';
+//        board[0][3] = 'Q'; board[7][3] = 'Q';
+        board[0][4] = new King(0, 4, 0);; board[7][4] = new King(7, 4, 1);
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
                 if (board[i][j] == null) board[i][j] = new NoPiece(i, j);
