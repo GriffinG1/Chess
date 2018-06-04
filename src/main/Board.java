@@ -29,7 +29,7 @@ public class Board {
 //        board[0][1] = 'N'; board[7][1] = 'N'; board[0][6] = 'N'; board[7][6] = 'N';
 //        board[0][2] = 'B'; board[7][2] = 'B'; board[0][5] = 'B'; board[7][5] = 'B';
 //        board[0][3] = 'Q'; board[7][3] = 'Q';
-        board[0][4] = new King(0, 4, 0);; board[7][4] = new King(7, 4, 1);
+        board[0][4] = new King(0, 4, 0); board[7][4] = new King(7, 4, 1);
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
                 if (board[i][j] == null) board[i][j] = new NoPiece(i, j);
