@@ -222,6 +222,28 @@ class King extends Piece {
                 System.out.print(Arrays.toString(capture.get(i)) + ", ");
             }
             System.out.println();
+            System.out.println("Would you like to capture a piece? (yes or no)");
+            String wantCapture;
+            boolean cap = false;
+            try {
+                wantCapture = r.readLine();
+            } catch (IOException ex) {wantCapture = "";}
+            while (true) {
+                if (wantCapture.toLowerCase().equals("yes") || wantCapture.toLowerCase().equals("no")) {
+                    if (!wantCapture.equals("yes")) {
+                        System.out.println("Alright then... moving on.");
+                        break;
+                    }
+                    else { cap = true; }
+                }
+                else {
+                    System.out.println("Error, input must be \"yes\" or \"no\". Capture? ");
+                    try {
+                        wantCapture = r.readLine();
+                    } catch (IOException ex) {wantCapture = "";}
+                }
+            }
+            if (cap != true) return new NoPiece(-1, -1);;
             System.out.println("Which row would you like to capture?");
             int row;
             try {
@@ -354,40 +376,254 @@ class King extends Piece {
 }
 
 class Rook extends Piece {
+    private int[] location; // row location @ [0], col location @ [1]
+    private int team; // White: 0 - Black: 1
+    private char name;
 
+    public Rook(int locA, int locB, int t) {
+        location = new int[]{locA, locB};
+        team = t;
+        if (team == 0) {name = 'R';} else {name = 'r';};
+    }
     
     public char getLetter() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return name;
     }
-
-    
-    public Piece canCapture() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     
     public String getLocation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Arrays.toString(location);
     }
 
     
     public int[] getLocationAsArray() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return location;
     }
-
-    
-    public void move() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     
     public void setLocation(int locA, int locB) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        location[0] = locA;
+        location[1] = locB;
     }
 
     
     public int getTeam() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return team;
+    }
+    
+    public Piece canCapture() {return null;}
+    
+    public Piece canCapture(int direction) {
+        if (direction == 0) {
+            Piece up = Board.getIndex(location[0] + (distanceToEnd(0) - 1), location[1]);
+            if ((up.getClass() != NoPiece.class) && up != this && (up.getTeam() != team)) {return up;}
+        }
+        else if (direction == 1) {
+            Piece down = Board.getIndex(location[0] + (distanceToEnd(1) + 1), location[1]);
+            if ((down.getClass() != NoPiece.class) && down != this && (down.getTeam() != team)) {return down;}
+        }
+        else if (direction == 2) {
+            Piece left = Board.getIndex(location[0], location[1] + (distanceToEnd(2) - 1));
+            if ((left.getClass() != NoPiece.class) && left != this && (left.getTeam() != team)) {return left;}
+        }
+        else if (direction == 3) {
+            Piece right = Board.getIndex(location[0], location[1] + (distanceToEnd(3) + 1));
+            if ((right.getClass() != NoPiece.class) && right != this && (right.getTeam() != team)) {return right;}
+        }
+        return new NoPiece(-1, -1);
+    }
+    
+    public void move() {
+        BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+        int oldLoc[] = new int[]{location[0], location[1]};
+        List<int[]> capture = new ArrayList<int[]>();
+        List<int[]> capturePiece = new ArrayList<int[]>();
+        boolean cap = false;
+        boolean captureUp = canCapture(0).getClass() != NoPiece.class;
+        boolean captureDown = canCapture(1).getClass() != NoPiece.class;
+        boolean captureLeft = canCapture(2).getClass() != NoPiece.class;
+        boolean captureRight = canCapture(3).getClass() != NoPiece.class;
+        boolean canCap = captureUp || captureDown || captureLeft || captureRight;
+        if (canCap) {
+            System.out.println("You can capture pieces at the following spaces: ");
+            if (captureUp) {System.out.print(canCapture(0).getLocation() + ", "); capturePiece.add(canCapture(0).getLocationAsArray());}
+            if (captureDown) {System.out.print(canCapture(1).getLocation() + ", "); capturePiece.add(canCapture(1).getLocationAsArray());}
+            if (captureLeft) {System.out.print(canCapture(2).getLocation() + ", "); capturePiece.add(canCapture(2).getLocationAsArray());}
+            if (captureRight) {System.out.print(canCapture(3).getLocation() + ", "); capturePiece.add(canCapture(3).getLocationAsArray());}
+            System.out.println();
+            System.out.println("Would you like to capture a piece? (yes or no)");
+            String wantCapture;
+            try {
+                wantCapture = r.readLine();
+            } catch (IOException ex) {wantCapture = "";}
+            while (true) {
+                if (wantCapture.toLowerCase().equals("yes") || wantCapture.toLowerCase().equals("no")) {
+                    if (!wantCapture.equals("yes")) {
+                        break;
+                    }
+                    else { cap = true; break;}
+                }
+                else {
+                    System.out.println("Error, input must be \"yes\" or \"no\". Capture? ");
+                    try {
+                        wantCapture = r.readLine();
+                    } catch (IOException ex) {wantCapture = "";}
+                }
+            }
+            if (cap == true) {
+                System.out.println("Which row would you like to capture?");
+                int row;
+                try {
+                    row = Integer.parseInt(r.readLine());
+                } catch (IOException ex) {
+                    System.out.println("Error, please only send an integer.");
+                    row = new Integer(-1);
+                }
+                System.out.println("Which column would you like to capture?");
+                int col;
+                try {
+                    col = Integer.parseInt(r.readLine());
+                } catch (IOException ex) {
+                    System.out.println("Error, please only send an integer.");
+                    col = new Integer(-1);
+                }
+                int[] captureLoc = new int[]{row, col};
+                while (true) {
+                    boolean contains = false;
+                    for (int[] i : capturePiece) {
+                        if (i[0] == captureLoc[0] && i[1] == captureLoc[1]) contains = true;
+                    }
+                    if (contains) {
+                        location = new int[]{captureLoc[0], captureLoc[1]};
+                        break;
+                    }
+                    else {
+                        System.out.println("Error, space at row and column is not capturable. Which row would you like to capture? ");
+                        try {
+                            row = Integer.parseInt(r.readLine());
+                        } catch (IOException ex) {
+                            System.out.println("Error, please only send an integer.");
+                            row = new Integer(-1);
+                        }
+                        System.out.println("Which column would you like to capture? ");
+                        try {
+                            col = Integer.parseInt(r.readLine());
+                        } catch (IOException ex) {
+                            System.out.println("Error, please only send an integer.");
+                            col = new Integer(-1);
+                        }
+                    }
+                }
+            }
+        }
+        if (cap == false) {
+            System.out.println("You can move to the following spaces: ");
+            System.out.println("Upwards: ");
+            for (int i = location[0] - 1; i > location[0] + distanceToEnd(0) - 1; i--) {
+                System.out.print("[" + i + ", " + location[1] + "], ");
+                capture.add(new int[]{i, location[1]});
+            }
+            System.out.println();
+            System.out.println("Downwards: ");
+            for (int i = location[0] + 1; i < location[0] + distanceToEnd(1) + 1; i++) {
+                System.out.print("[" + i + ", " + location[1] + "], ");
+                capture.add(new int[]{i, location[1]});
+            }
+            System.out.println();
+            System.out.println("To the left: ");
+            for (int i = location[1] - 1; i > location[1] + distanceToEnd(2) - 1; i--) {
+                System.out.print("[" + location[0] + ", " + i + "], ");
+                capture.add(new int[]{location[0], i});
+            }
+            System.out.println();
+            System.out.println("To the right: ");
+            for (int i = location[1] + 1; i < location[1] + distanceToEnd(3) + 1; i++) {
+                System.out.print("[" + location[0] + ", " + i + "], ");
+                capture.add(new int[]{location[0], i});
+            }
+            System.out.println();
+            System.out.println("Which row would you like to move to? ");
+            int row;
+            try {
+                row = Integer.parseInt(r.readLine());
+            } catch (IOException ex) {
+                System.out.println("Error, please only send an integer.");
+                row = new Integer(-1);
+            }
+            System.out.println("Which column would you like to move to? ");
+            int col;
+            try {
+                col = Integer.parseInt(r.readLine());
+            } catch (IOException ex) {
+                System.out.println("Error, please only send an integer.");
+                col = new Integer(-1);
+            }
+            int[] captureLoc = new int[]{row, col};
+            while (true) {
+                boolean contains = false;
+                for (int[] i : capture) {
+                    if (i[0] == captureLoc[0] && i[1] == captureLoc[1]) contains = true;
+                }
+                if (contains) {
+                    location = new int[]{captureLoc[0], captureLoc[1]};
+                    break;
+                }
+                else {
+                    System.out.println("Error, cannot move to space at row and column. Which row would you like to move to? ");
+                    try {
+                        row = Integer.parseInt(r.readLine());
+                    } catch (IOException ex) {
+                        System.out.println("Error, please only send an integer.");
+                        row = new Integer(-1);
+                    }
+                    System.out.println("Which column would you like to move to? ");
+                    try {
+                        col = Integer.parseInt(r.readLine());
+                    } catch (IOException ex) {
+                        System.out.println("Error, please only send an integer.");
+                        col = new Integer(-1);
+                    }
+                }
+            }
+        }
+        Board.updateBoard(oldLoc, this);
+        
+    }
+    
+    public int distanceToEnd(int direction) { // 0 = up, 1 = down, 2 = left, 3 = right
+        if (direction == 0) {
+            for (int i = location[0] - 1; i > 0; i--) {
+                if (Board.getIndex(i, location[1]).getClass() != NoPiece.class) {
+                    if (team == 0) return i - location[0] + 1;
+                    else return location[0] - i + 1;
+                }
+            }
+            return 0 - location[0];
+        }
+        else if (direction == 1) {
+            for (int i = location[0] + 1; i < 7; i++) {
+                if (Board.getIndex(i, location[1]).getClass() != NoPiece.class) {
+                    if (team == 0) return i - location[0] - 1;
+                    else return location[0] - i - 1;
+                }
+            }
+            return 7 - location[0];
+        }
+        else if (direction == 2) {
+            for (int i = location[1] - 1; i > 0; i--) {
+                if (Board.getIndex(location[0], i).getClass() != NoPiece.class) {
+                    return i - location[1] + 1;
+                }
+            }
+            return location[1] * -1 + 1;
+        }
+        else if (direction == 3) {
+            for (int i = location[1] + 1; i < 7; i++) {
+                if (Board.getIndex(location[0], i).getClass() != NoPiece.class) {
+                    return i - location[1] - 1;
+                }
+            }
+            return 7 - location[1] - 1;
+        }
+        return 0;
     }
     
 }

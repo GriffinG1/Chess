@@ -25,7 +25,7 @@ public class Board {
             board[6][c] = new Pawn(6, c, 1);
         }
         
-//        board[0][0] = 'R'; board[7][0] = 'R'; board[0][7] = 'R'; board[7][7] = 'R';
+        board[0][0] = new Rook(0, 0, 0); board[7][0] = new Rook(7, 0, 1); board[0][7] = new Rook(0, 7, 0); board[7][7] = new Rook(7, 7, 1);
 //        board[0][1] = 'N'; board[7][1] = 'N'; board[0][6] = 'N'; board[7][6] = 'N';
 //        board[0][2] = 'B'; board[7][2] = 'B'; board[0][5] = 'B'; board[7][5] = 'B';
 //        board[0][3] = 'Q'; board[7][3] = 'Q';
@@ -39,11 +39,9 @@ public class Board {
     
     public void getBoard() {
         System.out.println("\t      Black");
-        int count = 97;
         System.out.print("    ");
         for (int i = 0; i < board.length; i++) {
-            System.out.print(Character.toUpperCase((char) count) + "   ");
-            count++;
+            System.out.print(i + "   ");
         }
         System.out.println("\n");
         for (int i = 0; i < board.length; i++) {
