@@ -47,10 +47,6 @@ public class Board {
             black.add(board[4][c].getLocationAsArray());
             black.add(board[5][c].getLocationAsArray());
         }
-        for (int i = 0; i < black.size(); i++) {
-            System.out.print(Arrays.toString(black.get(i)) + ", ");
-            
-        }
         board[1][2] = null;
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {

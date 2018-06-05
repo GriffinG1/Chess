@@ -153,7 +153,7 @@ class Pawn extends Piece{
     
     public Piece canCapture() {
         if (team == 0) {
-            if ((Board.getIndex(location[0]+1, location[1]+1).getClass() != NoPiece.class)) {
+            if (location[1]+1 < 6 && (Board.getIndex(location[0]+1, location[1]+1).getClass() != NoPiece.class)) {
                 return Board.getIndex(location[0]+1, location[1]+1);
             }
             else if ((Board.getIndex(location[0]+1, location[1]-1).getClass() != NoPiece.class)) {
@@ -161,7 +161,7 @@ class Pawn extends Piece{
             }
         }
         else if (team == 1) {
-            if ((Board.getIndex(location[0]-1, location[1]+1).getClass() != NoPiece.class)) {
+            if (location[1]+1 < 6 && (Board.getIndex(location[0]-1, location[1]+1).getClass() != NoPiece.class)) {
                 return Board.getIndex(location[0]-1, location[1]+1);
             }
             else if ((Board.getIndex(location[0]-1, location[1]-1).getClass() != NoPiece.class)) {
@@ -426,19 +426,23 @@ class Rook extends Piece {
     
     public Piece canCapture(int direction) {
         if (direction == 0) {
-            Piece up = Board.getIndex(location[0] + (distanceToEnd(0) - 1), location[1]);
+            Piece up = new NoPiece(-1, -1);
+            if ((location[0] + distanceToEnd(0) - 1 > -1) && (location[0] + distanceToEnd(0) - 1 < 6)) up = Board.getIndex(location[0] + (distanceToEnd(0) - 1), location[1]);
             if ((up.getClass() != NoPiece.class) && up != this && (up.getTeam() != team)) {return up;}
         }
         else if (direction == 1) {
-            Piece down = Board.getIndex(location[0] + (distanceToEnd(1) + 1), location[1]);
+            Piece down = new NoPiece(-1, -1);
+            if ((location[0] + distanceToEnd(1) + 1 > -1) && (location[0] + distanceToEnd(1) + 1 < 6)) down = Board.getIndex(location[0] + (distanceToEnd(1) + 1), location[1]);
             if ((down.getClass() != NoPiece.class) && down != this && (down.getTeam() != team)) {return down;}
         }
         else if (direction == 2) {
-            Piece left = Board.getIndex(location[0], location[1] + (distanceToEnd(2) - 1));
+            Piece left = new NoPiece(-1, -1);
+            if ((location[1] + distanceToEnd(2) - 1 > -1) && (location[1] + distanceToEnd(2) - 1 < 6)) left = Board.getIndex(location[0], location[1] + (distanceToEnd(2) - 1));
             if ((left.getClass() != NoPiece.class) && left != this && (left.getTeam() != team)) {return left;}
         }
         else if (direction == 3) {
-            Piece right = Board.getIndex(location[0], location[1] + (distanceToEnd(3) + 1));
+            Piece right = new NoPiece(-1, -1);
+            if ((location[1] + distanceToEnd(3) + 1 > -1) && (location[1] + distanceToEnd(3) + 1 < 6)) right = Board.getIndex(location[0], location[1] + (distanceToEnd(3) + 1));
             if ((right.getClass() != NoPiece.class) && right != this && (right.getTeam() != team)) {return right;}
         }
         return new NoPiece(-1, -1);
@@ -986,7 +990,7 @@ class Queen extends Piece {
     }
     
     public void move() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("I can't be bothered to write Queen's move function, as it would be a terrible merger of Bishop and Rook's merge code. So sorry, you just wasted a turn.");
     }
     
     public Piece canCapture() {return null;}
