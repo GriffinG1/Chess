@@ -599,13 +599,13 @@ class Rook extends Piece {
             return 0 - location[0];
         }
         else if (direction == 1) {
-            for (int i = location[0] + 1; i < 7; i++) {
+            for (int i = location[0] + 1; i < 5; i++) {
                 if (Board.getIndex(i, location[1]).getClass() != NoPiece.class) {
                     if (team == 0) return i - location[0] - 1;
                     else return location[0] - i - 1;
                 }
             }
-            return 7 - location[0];
+            return 5 - location[0];
         }
         else if (direction == 2) {
             for (int i = location[1] - 1; i > 0; i--) {
@@ -616,12 +616,12 @@ class Rook extends Piece {
             return location[1] * -1 + 1;
         }
         else if (direction == 3) {
-            for (int i = location[1] + 1; i < 7; i++) {
+            for (int i = location[1] + 1; i < 5; i++) {
                 if (Board.getIndex(location[0], i).getClass() != NoPiece.class) {
                     return i - location[1] - 1;
                 }
             }
-            return 7 - location[1] - 1;
+            return 5 - location[1] - 1;
         }
         return 0;
     }
@@ -629,117 +629,161 @@ class Rook extends Piece {
 }
 
 class Bishop extends Piece {
+    private int[] location; // row location @ [0], col location @ [1]
+    private int team; // White: 0 - Black: 1
+    private char name;
+
+    public Bishop(int locA, int locB, int t) {
+        location = new int[]{locA, locB};
+        team = t;
+        if (team == 0) {name = 'B';} else {name = 'b';};
+    }
 
     
     public char getLetter() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return name;
     }
-
-    
-    public Piece canCapture() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     
     public String getLocation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Arrays.toString(location);
     }
-
     
     public int[] getLocationAsArray() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return location;
     }
-
+    
+    public void setLocation(int locA, int locB) {
+        location[0] = locA;
+        location[1] = locB;
+    }
+    
+    public int getTeam() {
+        return team;
+    }
     
     public void move() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
     
-    public void setLocation(int locA, int locB) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    public Piece canCapture() {return null;}
     
-    public int getTeam() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    /*public Piece canCapture(int direction) {
+        if (direction == 0) {
+            Piece up = Board.getIndex(location[0] + (distanceToEnd(0) - 1), location[1]);
+            if ((up.getClass() != NoPiece.class) && up != this && (up.getTeam() != team)) {return up;}
+        }
+        else if (direction == 1) {
+            Piece down = Board.getIndex(location[0] + (distanceToEnd(1) + 1), location[1]);
+            if ((down.getClass() != NoPiece.class) && down != this && (down.getTeam() != team)) {return down;}
+        }
+        else if (direction == 2) {
+            Piece left = Board.getIndex(location[0], location[1] + (distanceToEnd(2) - 1));
+            if ((left.getClass() != NoPiece.class) && left != this && (left.getTeam() != team)) {return left;}
+        }
+        else if (direction == 3) {
+            Piece right = Board.getIndex(location[0], location[1] + (distanceToEnd(3) + 1));
+            if ((right.getClass() != NoPiece.class) && right != this && (right.getTeam() != team)) {return right;}
+        }
+        return new NoPiece(-1, -1);
+    }*/
     
-}
-
-class Knight extends Piece {
-
-    
-    public char getLetter() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
-    public Piece canCapture() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
-    public String getLocation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
-    public int[] getLocationAsArray() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
-    public void move() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
-    public void setLocation(int locA, int locB) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
-    public int getTeam() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int[] distanceToEnd(int direction) { // 0 = up-left, 1 = up-right, 2 = down-left, 3 = down-right
+        int i = location[0]; int j = location[1];
+        if (direction == 0) {
+            i--; j--;
+            while(i > 0 && j > 0) {
+                if (Board.getIndex(i, j).getClass() == NoPiece.class) {
+                    i--;
+                    j--;
+                }
+                else {
+                    break;
+                }
+            }
+            return new int[]{i, j};
+        }
+        else if (direction == 1) {
+            i--; j++;
+            while(i > 0 && j < 6) {
+                if (Board.getIndex(i, j).getClass() == NoPiece.class) {
+                    i--;
+                    j++;
+                }
+                else {
+                    break;
+                }
+            }
+            return new int[]{i, j};
+        }
+        else if (direction == 2) {
+            i++; j--;
+            while(i < 6 && j > 0) {
+                if (Board.getIndex(i, j).getClass() == NoPiece.class) {
+                    i++;
+                    j--;
+                }
+                else {
+                    break;
+                }
+            }
+            return new int[]{i, j};
+        }
+        else if (direction == 3) {
+            i++; j++;
+            while(i < 6 && j < 6) {
+                if (Board.getIndex(i, j).getClass() == NoPiece.class) {
+                    i++;
+                    j++;
+                }
+                else {
+                    break;
+                }
+            }
+            return new int[]{i, j};
+        }
+        return new int[]{-1, -1};
     }
     
 }
 
 class Queen extends Piece {
+    private int[] location; // row location @ [0], col location @ [1]
+    private int team; // White: 0 - Black: 1
+    private char name;
+
+    public Queen(int locA, int locB, int t) {
+        location = new int[]{locA, locB};
+        team = t;
+        if (team == 0) {name = 'Q';} else {name = 'q';};
+    }
 
     
     public char getLetter() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return name;
     }
-
-    
-    public Piece canCapture() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     
     public String getLocation() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return Arrays.toString(location);
     }
-
     
     public int[] getLocationAsArray() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return location;
     }
-
+    
+    public void setLocation(int locA, int locB) {
+        location[0] = locA;
+        location[1] = locB;
+    }
+    
+    public int getTeam() {
+        return team;
+    }
     
     public void move() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
     
-    public void setLocation(int locA, int locB) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    
-    public int getTeam() {
+    public Piece canCapture() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
