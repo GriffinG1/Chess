@@ -33,8 +33,6 @@ public class Board {
     
     
     private void makeBoard(Piece[][] board) {
-        board[2][2] = new Bishop(2, 2, 0);
-        
         board[0][0] = new Rook(0, 0, 0); board[5][0] = new Rook(5, 0, 1); board[0][5] = new Rook(0, 5, 0); board[5][5] = new Rook(5, 5, 1);
         board[0][1] = new Bishop(0, 1, 0); board[5][1] = new Bishop(5, 1, 1); board[0][4] = new Bishop(0, 4, 0); board[5][4] = new Bishop(5, 4, 1);
         board[0][2] = new Queen(0, 2, 0); board[5][2] = new Queen(5, 2, 1);
@@ -47,7 +45,6 @@ public class Board {
             black.add(board[4][c].getLocationAsArray());
             black.add(board[5][c].getLocationAsArray());
         }
-        board[1][2] = null;
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
                 if (board[i][j] == null) board[i][j] = new NoPiece(i, j);
