@@ -1,24 +1,34 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Board {
     
     public static Piece[][] board;
-    public Pieces white;
-    public Pieces black;
+    private List<int[]> white;
+    private List<int[]> black;
     
     public Board() {
         board = new Piece[6][6];
+        white = new ArrayList<int[]>();
+        black = new ArrayList<int[]>();
         makeBoard(board);
         getBoard();
-        white = new Pieces(0);
-        black = new Pieces(1);
     }
     
     public static Piece getIndex(int a, int b) {
         return board[a][b];
+    }
+    
+    public List<int[]> getPieces(int t) {
+        if (t == 0) {
+            return white;
+        }
+        else {
+            return black;
+        }
     }
     
     
@@ -31,17 +41,17 @@ public class Board {
         board[0][3] = new King(0, 3, 0); board[5][3] = new King(5, 3, 1);
         for (int c = 0; c < board[0].length; c++) {
             board[1][c] = new Pawn(1, c, 0);
-            Piece obj0 = board[0][0];
-            white.addPiece(obj0);
-            System.out.println(white);
-            Piece obj1 = board[1][c];
-            white.addPiece(obj1);
+            white.add(board[0][c].getLocationAsArray());
+            white.add(board[1][c].getLocationAsArray());
             board[4][c] = new Pawn(4, c, 1);
-            Piece obj2 = board[0][c];
-            black.addPiece(obj2);
-            Piece obj3 = board[1][c];
-            black.addPiece(obj3);
+            black.add(board[4][c].getLocationAsArray());
+            black.add(board[5][c].getLocationAsArray());
         }
+        for (int i = 0; i < black.size(); i++) {
+            System.out.print(Arrays.toString(black.get(i)) + ", ");
+            
+        }
+        board[1][2] = null;
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
                 if (board[i][j] == null) board[i][j] = new NoPiece(i, j);
@@ -72,27 +82,5 @@ public class Board {
         board[oldLoc[0]][oldLoc[1]] = noPiece;
         int[] newLoc = piece.getLocationAsArray();
         board[newLoc[0]][newLoc[1]] = piece;
-    }
-}
-
-class Pieces {
-    private List<Piece> teamPieces;
-    private int team;
-    
-    public Pieces(int t) {
-        teamPieces = new ArrayList<Piece>();
-        team = t;
-    }
-    
-    public void addPiece(Piece obj) {
-        teamPieces.add(obj);
-    }
-    
-    public int getTeam() {
-        return team;
-    }
-    
-    public List<Piece> getArray() {
-        return teamPieces;
     }
 }
